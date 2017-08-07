@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+<head>
+    {% block head %}
+    <meta charset = "utf-8">
+    <meta http-equiv = "X-UA-Compatible" content = "IE = edge">
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1">
+        
+    <!-- Bootstrap -->
+    <link href = "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel = "stylesheet">
+
+    <!-- JQuery -->
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script src="https://unpkg.com/vue"></script>
+    {% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item nav-item-phrase">
+                    <a class="btn nav-link" href="phrase">Phrases</a>
+                </li>
+                <li class="nav-item nav-item-folder">
+                    <a class="btn nav-link" href="folder">Folders</a>
+                </li>
+                <li class="nav-item nav-item-language">
+                    <a class="btn nav-link" href="language">Languages</a>
+                </li>
+                <li class="nav-item nav-item-user">
+                    <a class="btn nav-link" href="user">Users</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="content" class="container">
+        {% block content %}{% endblock %}
+        <hr>
+        <div id="footer" class="footer">
+            {% block footer %}
+            &copy; Copyright 2017 by <a href="http://domain.invalid/">Yurii Levkovych</a>.
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

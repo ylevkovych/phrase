@@ -1,0 +1,227 @@
+{% extends "template.html" %}
+{% block title %}Users{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+    <div id="app-user">
+        
+        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <form class="form-inline">
+                <input type="hidden" class="userId">
+                <div class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <label>Username</label>
+                    <input class="username">
+                </div>
+                <div class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <label>Password</label>
+                    <input class="password">
+                </div>
+                <div class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <label>Email</label>
+                    <input class="email">
+                </div>
+                <div class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <button type="button" class="btn-sm btn-default" v-on:click="saveItem">Save</button>
+                </div>
+            </form>
+        </div>
+        <br><br><br>
+        <div>
+            <table class="table table-bordered">
+                <thead>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th></th>
+                    <th></th>
+                    </thead>
+                <tbody class="table-striped">
+                    <tr v-for="item in users">
+                        <td>[[item._id]]</td>
+                        <td>[[item.username]]</td>
+                        <td>[[item.email]]</td>
+                        <td><button class="btn-sm btn-default" v-on:click="editItem($event,item._id)">Edit</button></td>
+                        <td><button class="btn-sm btn-default" v-on:click="deleteItem($event,item._id)">Delete</button></td>
+                    </tr> 
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 text-center">
+            <ul class="pagination pagination-lg pager" id="myPager" v-for="n in total_pages">
+                <li v-if="n==current_page">
+                    <button type="button" class="btn-sm" disabled>[[n]]</button>
+                </li>
+                <li v-if="n!=current_page">
+                    <button type="button" class="btn-sm btn-default" v-on:click="setCurrentPage(n)">[[n]]</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        var app_user = new Vue({
+            el: '#app-user',
+            data: {
+                items_per_page: 5,
+                total_items: 0,
+                current_page: 1,
+                total_pages: 1,
+                users: null
+            },
+            created: function () {
+               this.renderData();
+            },
+            
+            methods: {
+                renderData: function() 
+                {
+                    var _this = this;
+                    $.when(_this.renderTotal()).done(function(req){
+                        _this.renderTotalPages();
+                        _this.renderCurrentPage();
+                    });
+                },
+                renderCurrentPage: function() {
+                    var _this = this;
+                    var success_callback = function(data) {
+                        _this.users = data;
+                    };
+                    var error_callback = function() {
+                    };
+                    var ajx = $.ajax({
+                        url: 'rest/api/v1.0/user?items='+_this.items_per_page+'&page='+_this.current_page,
+                        type: 'GET',
+                        success: success_callback,
+                        error: error_callback,
+                        contentType: "application/json"
+                    });
+                    return ajx;
+                },
+                renderTotal: function()
+                {
+                    var _this = this;
+                    var success_callback = function(data) {
+                        _this.total_items = data.length;
+                    };
+                    var error_callback = function() {
+                    };
+                    var ajx = $.ajax({
+                        url: 'rest/api/v1.0/user',
+                        type: 'GET',
+                        success: success_callback,
+                        error: error_callback,
+                        contentType: "application/json"
+                    });
+                    return ajx;
+                },
+                renderTotalPages: function()
+                {
+                    if (this.total_items == 0 || this.items_per_page == 0)
+                    {
+                        this.total_pages = 1;
+                    } else 
+                    {
+                        var total_pages = this.total_items / this.items_per_page;
+                        if (total_pages < 1)
+                        {
+                            total_pages = 1;
+                        }
+                        if (Math.round(total_pages) < total_pages)
+                        {
+                            total_pages = Math.round(total_pages) + 1;
+                        }
+                        this.total_pages = total_pages;
+
+                        if (this.current_page > this.total_pages)
+                        {
+                            this.current_page = this.total_pages;
+                        }
+                    }
+                },
+                setCurrentPage: function(n)
+                {
+                    this.current_page = n;
+                    this.renderData();
+                },
+                editItem: function(event, userId)
+                {
+                    var _this = this;
+                    var success_callback = function(data) {
+                        $("#app-user .userId").val(data._id);
+                        $("#app-user .username").val(data.username);
+                        $("#app-user .password").val(data.password);
+                        $("#app-user .email").val(data.email);
+                    };
+                    var error_callback = function() {
+                        alert("Item has not been fetched");
+                    };
+                    $.ajax({
+                        url: 'rest/api/v1.0/user/'+userId,
+                        type: 'GET',
+                        success: success_callback,
+                        error: error_callback,
+                        contentType: "application/json"
+                    });
+                    
+                },
+                deleteItem: function(event,userId)
+                {
+                    var _this = this;
+                    var success_callback = function() {
+                        alert("Item has been removed");
+                        _this.renderData();
+                    };
+                    var error_callback = function() {
+                        alert("Item has not been removed");
+                    };
+                    $.ajax({
+                        url: 'rest/api/v1.0/user/'+userId,
+                        type: 'DELETE',
+                        success: success_callback,
+                        error: error_callback,
+                        contentType: "application/json"
+                    });
+                },
+                saveItem: function()
+                {
+                    var _this = this;
+                    var success_callback = function() {
+                        alert("Item has been saved");
+                        $("#app-user .userId").val("");
+                         $("#app-user .username").val("");
+                        $("#app-user .password").val("");
+                        $("#app-user .email").val("");
+                        _this.renderData();
+                    };
+                    var error_callback = function() {
+                        alert("Item has not been saved");
+                    };
+
+                    var userId = $("#app-user .userId").val();
+                    var data = {
+                        username: $("#app-user .username").val(),
+                        password: $("#app-user .password").val(),
+                        email: $("#app-user .email").val(),
+                    };
+
+                    $.ajax({
+                        url: 'rest/api/v1.0/user'+(userId ? "/"+userId : ""),
+                        type: (userId ? "PUT" : "POST"),
+                        success: success_callback,
+                        error: error_callback,
+                        contentType: "application/json",
+                        data: JSON.stringify(data)
+                    });
+                    
+                }
+            },
+            delimiters: ["[[","]]"]
+        });
+
+        $(document).ready(function(){
+            $(".nav-item").removeClass("active");
+            $(".nav-item-user").addClass("active");
+        });
+    </script>
+{% endblock %}
