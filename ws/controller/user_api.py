@@ -4,20 +4,21 @@ User REST API
 '''
 
 import ws.controller.api_helper as api_helper
+import ws.controller.controller_decorators as controller_decorators
 import app as app
 import dao.user_dao as user_dao
+import dao.user_settings_dao as user_settings_dao
 import entity.user as user_entity
+import entity.user_settings as user_settings_entity
 import ws.service.user as user_service
 from flask import request
 
 @app.app.route("/rest/api/v1.0/user", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_users():
     page = request.args.get("page")
     items = request.args.get("items")
     
-    print ("page: "+str(page))
-    print ("items: "+str(items))
-
     users = user_dao.fetchall(page=page, items=items)
 
     return api_helper.get_json_resp(users)
@@ -34,6 +35,7 @@ def get_user(userId):
 
 
 @app.app.route("/rest/api/v1.0/user/name/<name>", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_user_by_name(name):
     user = user_dao.fetchone_by_username(name)
 
@@ -44,6 +46,7 @@ def get_user_by_name(name):
 
 
 @app.app.route("/rest/api/v1.0/user", methods=["POST"])
+@controller_decorators.check_auth_api
 def add_user():
     user = user_service.get_user_from_data(request.data)
 
@@ -52,9 +55,19 @@ def add_user():
 
     user_dao.create(user)
 
+    if (user._id):
+        user_settings = user_settings_entity.UserSettings()
+        user_settings.userId = user._id
+        user_settings.roleId = 2
+        user_settings.language1Id = 10
+        user_settings.language1Id = 11
+
+        user_settings_dao.create(user_settings)
+
     return api_helper.get_json_resp(user)
 
 @app.app.route("/rest/api/v1.0/user/<userId>", methods=["PUT"])
+@controller_decorators.check_auth_api
 def update_user(userId):
     user = user_service.get_user_from_data(request.data)
 
@@ -72,6 +85,7 @@ def update_user(userId):
 
 
 @app.app.route("/rest/api/v1.0/user/<userId>", methods=["DELETE"])
+@controller_decorators.check_auth_api
 def delete_user(userId):
     
     if (user_dao.fetchone(userId) is None):

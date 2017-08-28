@@ -4,6 +4,7 @@ Folder REST API
 '''
 
 import ws.controller.api_helper as api_helper
+import ws.controller.controller_decorators as controller_decorators
 import app as app
 import dao.folder_dao as folder_dao
 import entity.folder as folder_entity
@@ -11,6 +12,7 @@ import ws.service.folder as folder_service
 from flask import request
 
 @app.app.route("/rest/api/v1.0/folder", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_folders():
     page = request.args.get("page")
     items = request.args.get("items")
@@ -21,6 +23,7 @@ def get_folders():
 
 
 @app.app.route("/rest/api/v1.0/folder/<folderId>", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_fodler(folderId):
     folder = folder_dao.fetchone(folderId)
 
@@ -31,6 +34,7 @@ def get_fodler(folderId):
 
 
 @app.app.route("/rest/api/v1.0/folder/name/<name>", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_fodler_by_name(name):
     folder = folder_dao.fetchone_by_name(name)
 
@@ -41,6 +45,7 @@ def get_fodler_by_name(name):
 
 
 @app.app.route("/rest/api/v1.0/folder", methods=["POST"])
+@controller_decorators.check_auth_api
 def add_folder():
     folder = folder_service.get_folder_from_data(request.data)
 
@@ -55,6 +60,7 @@ def add_folder():
     return api_helper.get_json_resp(folder)
 
 @app.app.route("/rest/api/v1.0/folder/<folderId>", methods=["PUT"])
+@controller_decorators.check_auth_api
 def update_folder(folderId):
     folder = folder_service.get_folder_from_data(request.data)
 
@@ -72,6 +78,7 @@ def update_folder(folderId):
 
 
 @app.app.route("/rest/api/v1.0/folder/<folderId>", methods=["DELETE"])
+@controller_decorators.check_auth_api
 def delete_folder(folderId):
     
     if (folder_dao.fetchone(folderId) is None):

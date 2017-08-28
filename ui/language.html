@@ -18,20 +18,20 @@
             </form>
         </div>
         <br><br><br>
-        <div>
-            <table class="table table-bordered">
+        <div style="width: 80%;">
+            <table class="table table-condensed">
                 <thead>
                     <th>ID</th>
                     <th>Name</th>
                     <th></th>
                     <th></th>
                     </thead>
-                <tbody class="table-striped">
+                <tbody>
                     <tr v-for="item in languages">
-                        <td>[[item._id]]</td>
+                        <td style="width: 10%;">[[item._id]]</td>
                         <td>[[item.name]]</td>
-                        <td><button class="btn-sm btn-default" v-on:click="editItem($event,item._id)">Edit</button></td>
-                        <td><button class="btn-sm btn-default" v-on:click="deleteItem($event,item._id)">Delete</button></td>
+                        <td style="width: 2%;"><button class="btn-sm btn-default" v-on:click="editItem($event,item._id)">Edit</button></td>
+                        <td style="width: 2%;"><button class="btn-sm btn-default" v-on:click="deleteItem($event,item._id)">Delete</button></td>
                     </tr> 
                 </tbody>
             </table>
@@ -39,7 +39,7 @@
         <div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager" v-for="n in total_pages">
                 <li v-if="n==current_page">
-                    <button type="button" class="btn-sm" disabled>[[n]]</button>
+                    <button type="button" class="btn-sm btn-info" disabled>[[n]]</button>
                 </li>
                 <li v-if="n!=current_page">
                     <button type="button" class="btn-sm btn-default" v-on:click="setCurrentPage(n)">[[n]]</button>

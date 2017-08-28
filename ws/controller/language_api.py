@@ -4,6 +4,7 @@ Language REST API
 '''
 
 import ws.controller.api_helper as api_helper
+import ws.controller.controller_decorators as controller_decorators
 import app as app
 import dao.language_dao as language_dao
 import entity.language as language_entity
@@ -11,6 +12,7 @@ import ws.service.language as language_service
 from flask import request
 
 @app.app.route("/rest/api/v1.0/language", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_languages():
     page = request.args.get("page")
     items = request.args.get("items")
@@ -24,6 +26,7 @@ def get_languages():
 
 
 @app.app.route("/rest/api/v1.0/language/<languageId>", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_language(languageId):
     language = language_dao.fetchone(languageId)
 
@@ -34,6 +37,7 @@ def get_language(languageId):
 
 
 @app.app.route("/rest/api/v1.0/language/name/<name>", methods=["GET"])
+@controller_decorators.check_auth_api
 def get_language_by_name(name):
     language = language_dao.fetchone_by_languagename(name)
 
@@ -44,6 +48,7 @@ def get_language_by_name(name):
 
 
 @app.app.route("/rest/api/v1.0/language", methods=["POST"])
+@controller_decorators.check_auth_api
 def add_language():
     language = language_service.get_language_from_data(request.data)
 
@@ -58,6 +63,7 @@ def add_language():
     return api_helper.get_json_resp(language)
 
 @app.app.route("/rest/api/v1.0/language/<languageId>", methods=["PUT"])
+@controller_decorators.check_auth_api
 def update_language(languageId):
     language = language_service.get_language_from_data(request.data)
 
@@ -75,6 +81,7 @@ def update_language(languageId):
 
 
 @app.app.route("/rest/api/v1.0/language/<languageId>", methods=["DELETE"])
+@controller_decorators.check_auth_api
 def delete_language(languageId):
     
     if (language_dao.fetchone(languageId) is None):

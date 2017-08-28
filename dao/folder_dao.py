@@ -57,6 +57,9 @@ def delete(_id):
     db.write("DELETE FROM folder WHERE id={0}".format(_id))
 
 def _entity_from_resultset(r):
+    if len(r) < 2:
+        return None
+
     folder=folder_entity.Folder()
     folder._id=r[0]
     folder.name=r[1]

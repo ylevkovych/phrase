@@ -62,7 +62,7 @@ def init_tables():
     Initialize (create) DB tables
     '''
 
-    write ('''DROP TABLE user''')
+    # write ('''DROP TABLE user''')
 
     write ('''CREATE TABLE user (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,19 +70,19 @@ def init_tables():
         password TEXT NOT NULL,
         email TEXT NOT NULL)''')
 
-    write ('''DROP TABLE language''')
+    # write ('''DROP TABLE language''')
 
     write ('''CREATE TABLE language (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name CHAR(50) NOT NULL UNIQUE)''')
 
-    write ('''DROP TABLE folder''')
+    # write ('''DROP TABLE folder''')
 
     write ('''CREATE TABLE folder (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name CHAR(50) NOT NULL UNIQUE)''')
 
-    write ('''DROP TABLE translation''')
+    # write ('''DROP TABLE translation''')
 
     write ('''CREATE TABLE translation (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -92,3 +92,20 @@ def init_tables():
         language_2_id INTEGER NOT NULL,
         phrase_1 TEXT NOT NULL,
         phrase_2 TEXT NOT NULL)''')
+
+    # write ('''DROP TABLE user_settings''')
+
+    write ('''CREATE TABLE user_settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL UNIQUE,
+        role_id INTEGER DEFAULT 1,
+        language_1_id INTEGER,
+        language_2_id INTEGER)''')
+
+def init_t():
+     write ('''CREATE TABLE user_settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL UNIQUE,
+        role_id INTEGER DEFAULT 1,
+        language_1_id INTEGER,
+        language_2_id INTEGER)''')

@@ -55,6 +55,9 @@ def delete(_id):
     db.write("DELETE FROM language WHERE id={0}".format(_id))
 
 def _entity_from_resultset(r):
+    if len(r) < 2:
+        return None
+
     language = language_entity.Language()
     language._id=r[0]
     language.name=r[1]

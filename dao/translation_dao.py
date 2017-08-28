@@ -78,6 +78,9 @@ def delete(_id):
     db.write("DELETE FROM translation WHERE id={0}".format(_id))
 
 def _entity_from_resultset(r):
+    if len(r) < 7:
+        return None
+
     translation = translation_entity.Translation()
     translation._id=r[0]
     translation.user=r[1]
